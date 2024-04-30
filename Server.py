@@ -53,7 +53,7 @@ def BestHighway(highways):
             lowest_average_value = average_value
             best_highway = highway
 
-    return [best_highway, lowest_average_value]
+    return best_highway
 
 def ListenOnTCP(tcpSocket: socket.socket, socketAddress):
     serverResponse = GetServerData()
