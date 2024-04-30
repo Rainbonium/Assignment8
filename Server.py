@@ -10,7 +10,7 @@ import sys
 
 exitSignal = False
 maxPacketSize = 1024
-defaultPort = 25554
+defaultPort = 25552
 
 def GetFreePort(minPort: int = 1024, maxPort: int = 65535):
     for i in range(minPort, maxPort):
@@ -31,12 +31,14 @@ def GetServerData() -> []:
     import MongoDBConnection as mongo
     return mongo.QueryDatabase()
 
-saved_sensors = {}
 def SortSensors(sensors):
-    saved_sensors = []
+    saved_sensors = {}
+
     for sensor in sensors:
-        print(sensor[0])
-        saved_sensors[sensor[0]].append(sensor[1])
+        if sensor["sensor_name"] not in saved_sensors:
+            saved_sensors[sensor["sensor_name"]] = {}
+
+        saved_sensors[sensor["sensor_name"]] += sensor["sensor_value"]
 
     return saved_sensors
 
