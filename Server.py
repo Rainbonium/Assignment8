@@ -36,9 +36,9 @@ def SortSensors(sensors):
 
     for sensor in sensors:
         if sensor["sensor_name"] not in saved_sensors:
-            saved_sensors[sensor["sensor_name"]] = {}
+            saved_sensors[sensor["sensor_name"]] = []
 
-        saved_sensors[sensor["sensor_name"]] += sensor["sensor_value"]
+        saved_sensors[sensor["sensor_name"]].append(sensor["sensor_value"])
 
     return saved_sensors
 
