@@ -24,7 +24,7 @@ def GetFreePort(minPort: int = 1024, maxPort: int = 65535):
                 return i
             except socket.error as e:
                 if e.errno == errno.EADDRINUSE:
-                    print("Port",i,"already in use. Checking next...")
+                    print("Port", i, "already in use. Checking next...")
                 else:
                     print("An exotic error occurred:",e)
 
@@ -78,8 +78,10 @@ def ListenOnTCP(tcpSocket: socket.socket, socketAddress):
 def CreateTCPSocket() -> socket.socket:
     tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpPort = defaultPort
+    tcpIP = input("Enter IP Address: ") or "localhost"
     print("TCP Port:", tcpPort)
-    tcpSocket.bind(('localhost', tcpPort))
+    print("\tIP address is: ", {socket.gethostbyname(tcpIP)})
+    tcpSocket.bind((tcpIP, tcpPort))
     return tcpSocket
 
 def LaunchTCPThreads():

@@ -7,29 +7,31 @@ import contextlib
 import errno
 
 maxPacketSize = 1024
-defaultPort = 25552
-serverIP = '127.0.0.1'
+defaultPort = 25555
+defaultIP = "localhost"
 
 tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 try:
-    tcpPort = int(input("Please enter the TCP port of the host..."))
+    tcpIP = input("Please enter the IP address of the host: ") or defaultIP
+    tcpPort = int(input("Please enter the TCP port of the host: ")) or defaultPort
 except:
-    tcpPort = 0
-if tcpPort == 0:
+    tcpIP = defaultIP
     tcpPort = defaultPort
-tcpSocket.connect((serverIP, tcpPort))
+
+tcpSocket.connect((tcpIP, tcpPort))
 
 clientMessage = ""
 while clientMessage != "exit":
     clientMessage = input("Please type the message that you'd like to send (Or type \"exit\" to exit):\n>")
 
-    tcpSocket.send(clientMessage.encode())
-    serverMessage = tcpSocket.recv(maxPacketSize).decode()
+    if clientMessage != "exit":
+        tcpSocket.send(clientMessage.encode())
+        serverMessage = tcpSocket.recv(maxPacketSize).decode()
 
-    responseMessage = json.loads(serverMessage)
+        responseMessage = json.loads(serverMessage)
 
-    print("Best Highway: ", responseMessage["best_highway"])
-    print("Average Time: ", responseMessage["lowest_average_value"])
+        print("Best Highway: ", responseMessage["best_highway"])
+        print("Average Time: ", responseMessage["lowest_average_value"])
 
 tcpSocket.close()
 
