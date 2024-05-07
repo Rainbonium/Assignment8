@@ -4,6 +4,7 @@ import threading
 import time
 import contextlib
 import errno
+import json
 from dataclasses import dataclass
 import random
 import sys
@@ -35,10 +36,10 @@ def SortSensors(sensors):
     saved_sensors = {}
 
     for sensor in sensors:
-        if sensor["sensor_name"] not in saved_sensors:
-            saved_sensors[sensor["sensor_name"]] = []
+        if sensor["highway_name"] not in saved_sensors:
+            saved_sensors[sensor["highway_name"]] = []
 
-        saved_sensors[sensor["sensor_name"]].append(sensor["sensor_value"])
+        saved_sensors[sensor["highway_name"]].append(sensor["sensor_value"])
 
     return saved_sensors
 
@@ -53,7 +54,7 @@ def BestHighway(highways):
             lowest_average_value = average_value
             best_highway = highway
 
-    return best_highway
+    return best_highway, lowest_average_value
 
 def ListenOnTCP(tcpSocket: socket.socket, socketAddress):
     while tcpSocket:
@@ -66,8 +67,11 @@ def ListenOnTCP(tcpSocket: socket.socket, socketAddress):
 
         sortedSensors = SortSensors(serverResponse)
 
-        best_highway = BestHighway(sortedSensors)
-        tcpSocket.send(best_highway.encode())
+        best_highway, lowest_average_value = BestHighway(sortedSensors)
+        data = {"best_highway": best_highway, "lowest_average_value": lowest_average_value}
+        json_data = json.dumps(data)
+
+        tcpSocket.send(json_data.encode())
 
     tcpSocket.close()
 

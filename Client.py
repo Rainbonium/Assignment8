@@ -1,4 +1,5 @@
 import socket
+import  json
 import ipaddress
 import threading
 import time
@@ -25,7 +26,10 @@ while clientMessage != "exit":
     tcpSocket.send(clientMessage.encode())
     serverMessage = tcpSocket.recv(maxPacketSize).decode()
 
-    print("Best Highway: ", serverMessage)
+    responseMessage = json.loads(serverMessage)
+
+    print("Best Highway: ", responseMessage["best_highway"])
+    print("Average Time: ", responseMessage["lowest_average_value"])
 
 tcpSocket.close()
 
