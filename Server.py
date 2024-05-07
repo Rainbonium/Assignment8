@@ -10,7 +10,7 @@ import sys
 
 exitSignal = False
 maxPacketSize = 1024
-defaultPort = 25552
+defaultPort = 25555
 
 def GetFreePort(minPort: int = 1024, maxPort: int = 65535):
     for i in range(minPort, maxPort):
@@ -19,7 +19,7 @@ def GetFreePort(minPort: int = 1024, maxPort: int = 65535):
             try:
                 potentialPort.bind(('localhost', i))
                 potentialPort.close()
-                print("Server listening on port",i)
+                print("Server listening on port", i)
                 return i
             except socket.error as e:
                 if e.errno == errno.EADDRINUSE:
@@ -56,23 +56,25 @@ def BestHighway(highways):
     return best_highway
 
 def ListenOnTCP(tcpSocket: socket.socket, socketAddress):
-    serverResponse = GetServerData()
-    print("Received Data!")
+    while tcpSocket:
+        client_data = tcpSocket.recv(1024)
 
-    sortedSensors = SortSensors(serverResponse)
+        if not client_data: break
 
-    print(sortedSensors)
+        serverResponse = GetServerData()
+        print("Received Data!")
 
-    best_highway = BestHighway(sortedSensors)
-    tcpSocket.send(best_highway.encode())
+        sortedSensors = SortSensors(serverResponse)
+
+        best_highway = BestHighway(sortedSensors)
+        tcpSocket.send(best_highway.encode())
 
     tcpSocket.close()
-    pass
 
 def CreateTCPSocket() -> socket.socket:
     tcpSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpPort = defaultPort
-    print("TCP Port:",tcpPort)
+    print("TCP Port:", tcpPort)
     tcpSocket.bind(('localhost', tcpPort))
     return tcpSocket
 

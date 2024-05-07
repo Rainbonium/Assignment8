@@ -1,4 +1,5 @@
 from pymongo import MongoClient, database
+import traceback
 import subprocess
 import threading
 import pymongo
@@ -7,7 +8,7 @@ import time
 
 DBName = "test" #Use this to change which Database we're accessing
 connectionURL = "mongodb+srv://admin:admin@cluster0.yxwjeml.mongodb.net/?retryWrites=true&w=majority" #Put your database URL here
-sensorTable = "Sensor Data" #Change this to the name of your sensor data table
+sensorTableName = "Sensor Data" #Change this to the name of your sensor data table
 
 def QueryToList(query):
 	result = []
@@ -32,7 +33,7 @@ def QueryDatabase() -> []:
 		#print("Database collections: ", db.list_collection_names())
 
 		#We first ask the user which collection they'd like to draw from.
-		sensorTable = db[sensorTable]
+		sensorTable = db[sensorTableName]
 		#print("Table:", sensorTable)
 		#We convert the cursor that mongo gives us to a list for easier iteration.
 		timeCutOff = datetime.now() - timedelta(minutes=5)
@@ -58,4 +59,5 @@ def QueryDatabase() -> []:
 	except Exception as e:
 		print("Please make sure that this machine's IP has access to MongoDB.")
 		print("Error:",e)
+		print(traceback.format_exc())
 		exit(0)
